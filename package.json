@@ -16,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/tripathianmol/tinyapp/issues"
   },
-  "homepage": "https://github.com/tripathianmol/tinyapp#readme"
+  "homepage": "https://github.com/tripathianmol/tinyapp#readme",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
 }
