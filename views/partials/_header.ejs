@@ -18,7 +18,21 @@
         <a class="nav-item nav-link" href="/urls/new">Create New URL</a>
       </div>
     </div>
-    <button
+    <% if (user) { %>
+      <label>Logged in as <%= user["email"] %> </label>
+      <button
+      class="btn btn-primary"
+      type="button"
+      data-toggle="collapse"
+      data-target="#navbarNavAltMarkup"
+      aria-controls="navbarNavAltMarkup"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+    <a class="navbar-brand" href="/logout">Logout</a>
+    </button>
+    <% } else { %>
+      <button
       class="btn btn-primary"
       type="button"
       data-toggle="collapse"
@@ -38,7 +52,8 @@
       aria-expanded="false"
       aria-label="Toggle navigation"
     >
-    <a class="navbar-brand" href="/Register">Register</a>
+    <a class="navbar-brand" href="/register">Register</a>
     </button>
+    <% } %>
   </nav>
 </header>
