@@ -67,7 +67,7 @@ app.get("/logout", (req, res) => {
 
 app.get("/urls", (req, res) => {
   const templateVars = { urls: undefined, user: undefined };
-  console.log(req.session["user_id"]);
+  
   if (req.session["user_id"]) {
     templateVars["urls"] = urlsForUser(req.session["user_id"]);
     templateVars['user'] = users[req.session["user_id"]];
@@ -169,12 +169,14 @@ app.post("/urls/:id", (req, res) => {
 });
 
 app.post("/login", (req, res) => {
+  console.log(users);
+  console.log(getUserByEmail(req.body.email, users));
   if (req.session["user_id"]) {
     res.redirect("/urls");
   } else if (getUserByEmail(req.body.email, users)) {
     const user = getUserByEmail(req.body.email, users);
 
-    if (bcrypt.compareSync(user["password"], req.body.password)) {
+    if (bcrypt.compareSync(req.body.password, user["password"])) {
       req.session["user_id"] = user["id"];
       res.redirect(`/urls`);
     } else {
@@ -201,7 +203,8 @@ app.post("/register", (req, res) => {
     res.status(400).send("Error: empty fields");
   } else {
     users[randomId] = { "id": randomId, "email": req.body.email, "password": bcrypt.hashSync(req.body.password) };
-
+    console.log("user added\n");
+    console.log(users);
     req.session["user_id"] = randomId;
     res.redirect("/urls");
   }
