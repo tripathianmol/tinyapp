@@ -1,7 +1,7 @@
 const cookieSession = require("cookie-session");
 const express = require("express");
 const bcrypt = require("bcryptjs");
-const { getUserByEmail, generateRandomString } = require('./helpers');
+const { getUserByEmail, generateRandomString, urlsForUser } = require('./helpers');
 
 const app = express();
 const PORT = 8085;
@@ -12,26 +12,6 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieSession({ name: 'session', keys: ['random', 'word']}));
 
 app.set("view engine", "ejs");
-
-// Helpers
-
-const urlsForUser = function(id) {
-  let matchedKeys = [];
-
-  for (let key of Object.keys(urlDatabase)) {
-    if (urlDatabase[key]["userID"] === id) {
-      matchedKeys.push(key);
-    }
-  }
-
-  let urls = {};
-
-  for (let key of matchedKeys) {
-    urls[key] = urlDatabase[key];
-  }
-
-  return urls;
-};
 
 // Data
 
@@ -57,7 +37,11 @@ const users = {
 // GET
 
 app.get("/", (req, res) => {
-  res.send("Hello!");
+  if (req.session["user_id"]) {
+    res.redirect("/urls");
+  } else {
+    res.redirect("/login");
+  }
 });
 
 app.get("/logout", (req, res) => {
@@ -69,7 +53,7 @@ app.get("/urls", (req, res) => {
   const templateVars = { urls: undefined, user: undefined };
   
   if (req.session["user_id"]) {
-    templateVars["urls"] = urlsForUser(req.session["user_id"]);
+    templateVars["urls"] = urlsForUser(req.session["user_id"], users);
     templateVars['user'] = users[req.session["user_id"]];
     res.render("urls_index", templateVars);
   } else {

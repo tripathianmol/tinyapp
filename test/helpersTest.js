@@ -29,4 +29,11 @@ describe('getUserByEmail', function() {
     // Write your assert statement here
     assert.isNull(user);
   });
+
+  it('should return null with no email', function() {
+    const user = getUserByEmail("", testUsers);
+    
+    // Write your assert statement here
+    assert.isNull(user);
+  });
 });
