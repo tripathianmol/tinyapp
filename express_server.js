@@ -6,26 +6,32 @@ const { getUserByEmail, generateRandomString, urlsForUser } = require('./helpers
 const app = express();
 const PORT = 8085;
 
-// Middleware
+/********************
+// MIDDLEWARE
+********************/
 
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieSession({ name: 'session', keys: ['random', 'word']}));
 
 app.set("view engine", "ejs");
 
-// Data
+/********************
+// DATA
+********************/
 
+// Contains URL data
 const urlDatabase = {
   "b2xVn2": {
     longURL: "http://www.lighthouselabs.ca",
-    userID: "aJ48lW"
+    userID: "s3Kc5k"
   },
   "9sm5xK": {
     longURL: "http://www.google.com",
-    userID: "aJ48lW"
+    userID: "s3Kc5k"
   }
 };
 
+// Contains user data
 const users = {
   's3Kc5k': {
     'id': 's3Kc5k',
@@ -34,7 +40,9 @@ const users = {
   }
 };
 
+/********************
 // GET
+********************/
 
 app.get("/", (req, res) => {
   if (req.session["user_id"]) {
@@ -44,16 +52,18 @@ app.get("/", (req, res) => {
   }
 });
 
+// Logs user out
 app.get("/logout", (req, res) => {
   req.session = null;
   res.redirect("/login");
 });
 
+// Main page where URLs displayed for logged in user
 app.get("/urls", (req, res) => {
   const templateVars = { urls: undefined, user: undefined };
   
   if (req.session["user_id"]) {
-    templateVars["urls"] = urlsForUser(req.session["user_id"], users);
+    templateVars["urls"] = urlsForUser(req.session["user_id"], urlDatabase);
     templateVars['user'] = users[req.session["user_id"]];
     res.render("urls_index", templateVars);
   } else {
@@ -87,6 +97,7 @@ app.get("/urls.json", (req, res) => {
   res.json(urlDatabase);
 });
 
+// Short URL link
 app.get("/u/:id", (req, res) => {
   const longURL = urlDatabase[req.params.id]["longURL"];
 
@@ -97,6 +108,7 @@ app.get("/u/:id", (req, res) => {
   }
 });
 
+// Registration page
 app.get("/register", (req, res) => {
   const templateVars = { user: undefined };
   
@@ -107,6 +119,7 @@ app.get("/register", (req, res) => {
   }
 });
 
+// Login page
 app.get("/login", (req, res) => {
   const templateVars = { user: undefined };
 
@@ -117,7 +130,9 @@ app.get("/login", (req, res) => {
   }
 });
 
+/********************
 // POST
+********************/
 
 app.post("/urls", (req, res) => {
   let id = generateRandomString(6);

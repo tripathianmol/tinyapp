@@ -22,8 +22,8 @@ const generateRandomString = function(length) {
 const urlsForUser = function(id, database) {
   let matchedKeys = [];
 
-  for (let key of Object.keys(urlDatabase)) {
-    if (urlDatabase[key]["userID"] === id) {
+  for (let key of Object.keys(database)) {
+    if (database[key]["userID"] === id) {
       matchedKeys.push(key);
     }
   }
@@ -31,7 +31,7 @@ const urlsForUser = function(id, database) {
   let urls = {};
 
   for (let key of matchedKeys) {
-    urls[key] = urlDatabase[key];
+    urls[key] = database[key];
   }
 
   return urls;
