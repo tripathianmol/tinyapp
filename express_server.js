@@ -124,7 +124,7 @@ app.post("/urls", (req, res) => {
 
   if (req.session["user_id"]) {
     urlDatabase[id] = { "longURL": req.body.longURL, "userID": req.session["user_id"] };
-    console.log(urlDatabase);
+    
     res.redirect(`/urls/${id}`);
   } else {
     res.status(401).send("Not logged in.");
@@ -134,7 +134,6 @@ app.post("/urls", (req, res) => {
 app.post("/urls/:id/delete", (req, res) => {
   if (req.session["user_id"] && urlDatabase[req.params.id]["userID"] === req.session["user_id"]) {
     delete urlDatabase[req.params.id];
-    console.log(urlDatabase);
     res.redirect(`/urls`);
   } else {
     res.status(401).send("Not logged in.");
@@ -145,7 +144,7 @@ app.post("/urls/:id/delete", (req, res) => {
 app.post("/urls/:id", (req, res) => {
   if (req.session["user_id"] && urlDatabase[req.params.id]["userID"] === req.session["user_id"]) {
     urlDatabase[req.params.id]["longURL"] = req.body.updatedURL;
-    console.log(urlDatabase);
+    
     res.redirect(`/urls/${req.params.id}`);
   } else {
     res.status(401).send("Not logged in.");
@@ -153,8 +152,6 @@ app.post("/urls/:id", (req, res) => {
 });
 
 app.post("/login", (req, res) => {
-  console.log(users);
-  console.log(getUserByEmail(req.body.email, users));
   if (req.session["user_id"]) {
     res.redirect("/urls");
   } else if (getUserByEmail(req.body.email, users)) {
@@ -187,8 +184,7 @@ app.post("/register", (req, res) => {
     res.status(400).send("Error: empty fields");
   } else {
     users[randomId] = { "id": randomId, "email": req.body.email, "password": bcrypt.hashSync(req.body.password) };
-    console.log("user added\n");
-    console.log(users);
+    
     req.session["user_id"] = randomId;
     res.redirect("/urls");
   }
@@ -196,7 +192,5 @@ app.post("/register", (req, res) => {
 
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
-  console.log(users);
-  console.log(urlDatabase);
 });
 
