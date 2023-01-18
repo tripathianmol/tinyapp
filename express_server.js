@@ -134,6 +134,7 @@ app.get("/login", (req, res) => {
 // POST
 ********************/
 
+// Add URL for user
 app.post("/urls", (req, res) => {
   let id = generateRandomString(6);
 
@@ -146,6 +147,7 @@ app.post("/urls", (req, res) => {
   }
 });
 
+// Delete URL for logged in user
 app.post("/urls/:id/delete", (req, res) => {
   if (req.session["user_id"] && urlDatabase[req.params.id]["userID"] === req.session["user_id"]) {
     delete urlDatabase[req.params.id];
@@ -156,6 +158,7 @@ app.post("/urls/:id/delete", (req, res) => {
   
 });
 
+// Update URL for logged in user
 app.post("/urls/:id", (req, res) => {
   if (req.session["user_id"] && urlDatabase[req.params.id]["userID"] === req.session["user_id"]) {
     urlDatabase[req.params.id]["longURL"] = req.body.updatedURL;
@@ -166,6 +169,7 @@ app.post("/urls/:id", (req, res) => {
   }
 });
 
+// User login
 app.post("/login", (req, res) => {
   if (req.session["user_id"]) {
     res.redirect("/urls");
@@ -173,6 +177,7 @@ app.post("/login", (req, res) => {
     const user = getUserByEmail(req.body.email, users);
 
     if (bcrypt.compareSync(req.body.password, user["password"])) {
+      //Successful login
       req.session["user_id"] = user["id"];
       res.redirect(`/urls`);
     } else {
@@ -183,11 +188,13 @@ app.post("/login", (req, res) => {
   }
 });
 
+// User logout
 app.post("/logout", (req, res) => {
   req.session = null;
   res.redirect("/login");
 });
 
+// User registered and login info added to database
 app.post("/register", (req, res) => {
   let randomId = generateRandomString(6);
   
