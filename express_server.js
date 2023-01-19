@@ -163,7 +163,7 @@ app.post("/urls/:id", (req, res) => {
   if (req.session["user_id"] && urlDatabase[req.params.id]["userID"] === req.session["user_id"]) {
     urlDatabase[req.params.id]["longURL"] = req.body.updatedURL;
     
-    res.redirect(`/urls/${req.params.id}`);
+    res.redirect(`/urls`);
   } else {
     res.status(401).send("Not logged in.");
   }
